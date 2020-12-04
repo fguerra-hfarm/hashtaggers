@@ -16,28 +16,19 @@ def import_csv():
             words = words.replace("\xa0", " ")
             words = words.replace("https:", "")
             words = words.replace("http:", "")
-            words = words.replace("/", " ")
-            words = words.replace("|", " ")
-            words = words.replace("!", "")
-            words = words.replace("?", "")
-            words = words.replace("(", "")
-            words = words.replace(")", "")
-            words = words.replace(":", "")
-            words = words.replace("'", "")
-            words = words.replace("..", "")
-            words = words.replace("...", "")
-            words = words.replace("....", "")
-            words = words.replace(".", "")
-            words = words.replace("  ", " ")
 
+            remove = string.punctuation
+            remove = remove.replace("#", "")  # don't remove hashtags
+            pattern = r"[{}]".format(remove)  # create the pattern
+
+            re.sub(pattern, "", words)
             words = words.split(" ")
 
             for word in words:
                 try:
                     if word[0] == "#":
-                        if "." in word[-1] or "," in word[-1] or "/" in word[-1] or "|" in word[-1]:
+                        if "." in word[-1] or "," in word[-1] or "/" in word[-1] or "|" in word[-1] or ";" in word[-1]:
                             word = word[:-1]
-
                         if word.lower() not in ht_list:
                             ht_list.append(word.lower())
                 except:
@@ -48,12 +39,9 @@ def import_csv():
         #    for row in ht_list:
         #        wr.writerow([row])
 
-        print(ht_list)
-        print("The number of hashtags to analyze from the file is:", len(ht_list))
-        print(Counter(ht_list))
+        #print(ht_list)
+        #print("The number of hashtags to analyze from the file is:", len(ht_list))
         return ht_list
-
-import_csv()
 
 def hashtag_count():
     ht_list = []

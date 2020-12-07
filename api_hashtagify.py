@@ -33,6 +33,8 @@ def get_json():
 
     if response.ok:
         json_data = response.json()
+        with open('hashtag_data.json', 'w') as f:
+            json.dump(json_data, f, indent=2)
         return json_data
     else:
         if response.status_code == 404:

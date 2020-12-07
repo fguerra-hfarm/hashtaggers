@@ -3,9 +3,9 @@ import json
 from collections import Counter
 from tabulate import tabulate
 
-from posts_csv import use_csv
+from twposts_csv import use_csv
 
-api_url = "https://api.hashtagify.me/1.0/tag/"
+endpoint = "https://api.hashtagify.me/1.0/tag/"
 
 
 def read_access_token():
@@ -17,33 +17,43 @@ def read_access_token():
     return access_token
 
 
-def get_stats_test():
-    hashtag = ""
-    c = Counter(use_csv()).most_common(5)
-
+def get_json():
+    c = Counter(use_csv()).most_common(10)
     table = c
-    # print(tabulate(table, headers=["Hashtag - #", "Occurrence"], tablefmt="fancy_grid", numalign="center"))
-
-    # for i in c:
-        # tags_list = tags_list + i[0] + " "
-    # url = api_url + tags_list
+    print(tabulate(table, headers=["Hashtag - #", "Occurrence"], tablefmt="fancy_grid", numalign="center"))
+    print()
+    hashtag = input(f"From the given table, choose an hashtag for a complete analysis: ")
+    print()
 
     headers = {
         'authorization': "Bearer " + read_access_token(),
         'cache-control': "no-cache"
     }
+    response = requests.get(endpoint + hashtag, headers=headers)
 
-    for i in c:
-        hashtag = hashtag + i[0]
-        url = api_url + hashtag
-        print(url)
+    if response.ok:
+        json_data = response.json()
+        return json_data
+    else:
+        if response.status_code == 404:
+            print("Status code: ", response.status_code)
+            print("Hashtag not found, there isn't enough data yet for the requested hashtag.")
+        elif response.status_code == 429:
+            print("Status code: ", response.status_code)
+            print("The daily or hourly quota has been exceeded.")
+        raise Exception("There is an error...")
 
-    response = requests.request("GET", url, headers=headers)
-    # data = response.json()
 
-    # print(data)
-    # print(url)
-    print(response.text)
+def show_stats(data):
+    print("Data: ", data)
+    popularity = data["popularity"]
+    variants = data["variants"]
+    languages = data["languages"]
+    top_influencers = data["top_influencers"]
+    print(f"This hashtag is {popularity} popular, has these variants: {variants}, "
+          f"with these top influencers: {top_influencers} and it is mostly used in these languages: {languages}")
 
 
-get_stats_test()
+if __name__ == "__main__":
+    data = get_json()
+    show_stats(data)

@@ -1,6 +1,7 @@
 import requests
 import json
-import time
+from time import sleep
+from datapackage import Package
 from collections import Counter
 from tabulate import tabulate
 
@@ -16,8 +17,18 @@ def read_access_token():
     return access_token
 
 
-def get_insights(hashtag):
+def check_langcode(languages_code):
+    package = Package('https://datahub.io/core/language-codes/datapackage.json')
 
+    # check language in database
+    for resource in package.resources:
+        if resource.descriptor['datahub']['type'] == 'derived/csv':
+            for i in range(len(resource.read())):
+                if resource.read()[i][0] == languages_code:
+                    return resource.read()[i][1].lower()
+
+
+def get_insights(hashtag):
     endpoint = "https://api.hashtagify.me/1.0/tag/"
     headers = {
         'authorization': "Bearer " + read_access_token(),
@@ -26,39 +37,51 @@ def get_insights(hashtag):
     response = requests.get(endpoint + hashtag, headers=headers)
 
     if response.ok:
+        print("\nRunning...")
         json_data = response.json()
         with open('hashtag_data.json', 'w+') as f:
             json.dump(json_data, f, indent=2)
-            if hashtag in json_data:
-                popularity = json_data[hashtag]["popularity"]
-                variants = json_data[hashtag]["variants"][0]
-                languages = json_data[hashtag]["languages"][0]
-                top_influencers = json_data[hashtag]["top_influencers"][0]
-                print()
-                print(f"#%s has been found in the JSON data" % hashtag, f"and it is {popularity}% popular on Twitter, "
-                      f"its most used variant is {variants}, the top influencer is {top_influencers} "
-                      f"and it is mostly used in {languages}")
-                print()
-                print("Here the full JSON insights of", hashtag, ":", json_data[hashtag])
-                print('\n\nStatistics for: ', json_data[hashtag]['name'], '\n')
-                print(f"Popularity: {popularity}%")
 
-                print('\nTABLE OF VARIANTS')
-                table1 = json_data[hashtag]['variants']
-                headers = ['Variant', '% of total']
-                print(tabulate(table1, headers, tablefmt="fancy_grid"))
+            popularity = json_data[hashtag]['popularity']
+            variants_word = json_data[hashtag]['variants']
+            variants_word = [_[0] for _ in variants_word][0]
+            variants_perc = json_data[hashtag]['variants']
+            variants_perc = [_[1] for _ in variants_perc][0]
+            languages_code = json_data[hashtag]['languages']
+            languages_code = [_[0] for _ in languages_code][0]
+            languages_perc = json_data[hashtag]['languages']
+            languages_perc = [_[1] for _ in languages_perc][0]
+            top_influencers_name = json_data[hashtag]['top_influencers']
+            top_influencers_name = [_[0] for _ in top_influencers_name][0]
+            top_influencers_reach = json_data[hashtag]['top_influencers']
+            top_influencers_reach = [_[1] for _ in top_influencers_reach][0]
+            # 'related_tags': {'name': 'salsa', 'correlation': 1.13}
+            related_tag = json_data[hashtag]['related_tags']
+            print()
+            print(f"#%s has been found in the JSON data" % hashtag,
+                  f"and it is {popularity}% popular on Twitter, its most used variant is {variants_word} "
+                  f"with {variants_perc}% of use, the top influencer is {top_influencers_name} "
+                  f"with a reach of {top_influencers_reach}, it is mostly in {check_langcode(languages_code)} "
+                  f"with a presence of {languages_perc}% and its most related tag is {related_tag}")
+            print()
+            print("Here the full JSON insights of", hashtag, ":", json_data[hashtag])
+            print('\n\nStatistics for: ', json_data[hashtag]['name'], '\n')
+            print(f"Popularity: {popularity}%")
 
-                print('\nTABLE OF LANGUAGES')
-                table2 = json_data[hashtag]['languages']
-                headers = ['Language', '% of total']
-                print(tabulate(table2, headers, tablefmt="fancy_grid"))
+            print('\nTABLE OF VARIANTS')
+            table1 = json_data[hashtag]['variants']
+            headers = ['Variant', '% of total']
+            print(tabulate(table1, headers, tablefmt="fancy_grid"))
 
-                print('\nTABLE OF TOP INFLUENCERS')
-                table3 = json_data[hashtag]['top_influencers']
-                headers = ['Influencer', 'Total reach']
-                print(tabulate(table3, headers, tablefmt="fancy_grid"))
-            else:
-                print("#%s has not been found in JSON data, please try another hashtag that is present" % hashtag)
+            print('\nTABLE OF LANGUAGES')
+            table2 = json_data[hashtag]['languages']
+            headers = ['Language', '% of total']
+            print(tabulate(table2, headers, tablefmt="fancy_grid"))
+
+            print('\nTABLE OF TOP INFLUENCERS')
+            table3 = json_data[hashtag]['top_influencers']
+            headers = ['Influencer', 'Total reach']
+            print(tabulate(table3, headers, tablefmt="fancy_grid"))
     else:
         elif response.status_code == 404:
             print("Status code: ", response.status_code)
@@ -74,6 +97,6 @@ if __name__ == "__main__":
     table = Counter(use_csv()).most_common(5)
     print(tabulate(table, headers=["Hashtag - #", "Occurrence"], tablefmt="fancy_grid", numalign="center"))
     print()
-    time.sleep(1)
+    sleep(1)
     data = get_insights(hashtag=input(f"From the given table, you may choose one of the most "
                                       f"recurrent hashtags for a complete analysis: "))

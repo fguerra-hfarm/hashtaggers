@@ -1,30 +1,24 @@
 import requests
 import json
+import time
 from collections import Counter
 from tabulate import tabulate
 
-from twposts_csv import use_csv
-
-endpoint = "https://api.hashtagify.me/1.0/tag/"
+from posts_csv import use_csv
 
 
 def read_access_token():
     access_token = ""
-    file = open("api_token.txt", "r")
+    file = open('api_token.txt', 'r')
     for line in file:
         access_token = line.split(' ')[-1]
     file.close()
     return access_token
 
 
-def get_json():
-    c = Counter(use_csv()).most_common(10)
-    table = c
-    print(tabulate(table, headers=["Hashtag - #", "Occurrence"], tablefmt="fancy_grid", numalign="center"))
-    print()
-    hashtag = input(f"From the given table, choose an hashtag for a complete analysis: ")
-    print()
+def get_insights(hashtag):
 
+    endpoint = "https://api.hashtagify.me/1.0/tag/"
     headers = {
         'authorization': "Bearer " + read_access_token(),
         'cache-control': "no-cache"
@@ -33,9 +27,21 @@ def get_json():
 
     if response.ok:
         json_data = response.json()
-        with open('hashtag_data.json', 'w') as f:
+        with open('hashtag_data.json', 'w+') as f:
             json.dump(json_data, f, indent=2)
-        return json_data
+            if hashtag in json_data:
+                popularity = json_data[hashtag]["popularity"]
+                variants = json_data[hashtag]["variants"]
+                languages = json_data[hashtag]["languages"]
+                top_influencers = json_data[hashtag]["top_influencers"]
+                print()
+                print(f"#%s has been found in the JSON data" % hashtag, f"and it is {popularity} popular, "
+                      f"it has these variants: {variants}, these top influencers: {top_influencers} "
+                      f"and it is mostly used in these languages: {languages}")
+                print()
+                print("Here the full JSON insights of", hashtag, ":", json_data[hashtag])
+            else:
+                print("#%s has not been found in JSON data, please try another hashtag that is present" % hashtag)
     else:
         if response.status_code == 404:
             print("Status code: ", response.status_code)
@@ -46,16 +52,9 @@ def get_json():
         raise Exception("There is an error...")
 
 
-def show_stats(data):
-    print("Data: ", data)
-    popularity = data["popularity"]
-    variants = data["variants"]
-    languages = data["languages"]
-    top_influencers = data["top_influencers"]
-    print(f"This hashtag is {popularity} popular, has these variants: {variants}, "
-          f"with these top influencers: {top_influencers} and it is mostly used in these languages: {languages}")
-
-
 if __name__ == "__main__":
-    data = get_json()
-    show_stats(data)
+    table = Counter(use_csv()).most_common(5)
+    print(tabulate(table, headers=["Hashtag - #", "Occurrence"], tablefmt="fancy_grid", numalign="center"))
+    print()
+    time.sleep(1)
+    data = get_insights(hashtag=input(f"From the given table, choose an hashtag for a complete analysis: "))

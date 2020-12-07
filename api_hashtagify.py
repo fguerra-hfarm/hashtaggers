@@ -31,24 +31,42 @@ def get_insights(hashtag):
             json.dump(json_data, f, indent=2)
             if hashtag in json_data:
                 popularity = json_data[hashtag]["popularity"]
-                variants = json_data[hashtag]["variants"]
-                languages = json_data[hashtag]["languages"]
-                top_influencers = json_data[hashtag]["top_influencers"]
+                variants = json_data[hashtag]["variants"][0]
+                languages = json_data[hashtag]["languages"][0]
+                top_influencers = json_data[hashtag]["top_influencers"][0]
                 print()
-                print(f"#%s has been found in the JSON data" % hashtag, f"and it is {popularity} popular, "
-                      f"it has these variants: {variants}, these top influencers: {top_influencers} "
-                      f"and it is mostly used in these languages: {languages}")
+                print(f"#%s has been found in the JSON data" % hashtag, f"and it is {popularity}% popular on Twitter, "
+                      f"its most used variant is {variants}, the top influencer is {top_influencers} "
+                      f"and it is mostly used in {languages}")
                 print()
                 print("Here the full JSON insights of", hashtag, ":", json_data[hashtag])
+                print('\n\nStatistics for: ', json_data[hashtag]['name'], '\n')
+                print(f"Popularity: {popularity}%")
+
+                print('\nTABLE OF VARIANTS')
+                table1 = json_data[hashtag]['variants']
+                headers = ['Variant', '% of total']
+                print(tabulate(table1, headers, tablefmt="fancy_grid"))
+
+                print('\nTABLE OF LANGUAGES')
+                table2 = json_data[hashtag]['languages']
+                headers = ['Language', '% of total']
+                print(tabulate(table2, headers, tablefmt="fancy_grid"))
+
+                print('\nTABLE OF TOP INFLUENCERS')
+                table3 = json_data[hashtag]['top_influencers']
+                headers = ['Influencer', 'Total reach']
+                print(tabulate(table3, headers, tablefmt="fancy_grid"))
             else:
                 print("#%s has not been found in JSON data, please try another hashtag that is present" % hashtag)
     else:
-        if response.status_code == 404:
+        elif response.status_code == 404:
             print("Status code: ", response.status_code)
             print("Hashtag not found, there isn't enough data yet for the requested hashtag.")
         elif response.status_code == 429:
             print("Status code: ", response.status_code)
             print("The daily or hourly quota has been exceeded.")
+
         raise Exception("There is an error...")
 
 
@@ -57,4 +75,5 @@ if __name__ == "__main__":
     print(tabulate(table, headers=["Hashtag - #", "Occurrence"], tablefmt="fancy_grid", numalign="center"))
     print()
     time.sleep(1)
-    data = get_insights(hashtag=input(f"From the given table, choose an hashtag for a complete analysis: "))
+    data = get_insights(hashtag=input(f"From the given table, you may choose one of the most "
+                                      f"recurrent hashtags for a complete analysis: "))

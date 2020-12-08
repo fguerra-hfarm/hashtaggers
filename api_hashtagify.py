@@ -55,18 +55,25 @@ def get_insights(hashtag):
             related_tag = json_data[hashtag]['related_tags']['name']
             related_tag_corr = json_data[hashtag]['related_tags']['correlation']
             print()
-            print(f"#%s has been found in the JSON data" % hashtag,
-                  f"and it is {popularity}% popular on Twitter, its most used variant is {variants_word} "
-                  f"with {variants_perc}% of use, the top influencer is {top_influencers_name} "
-                  f"with a reach of {top_influencers_reach}, it is mostly in {check_langcode(languages_code)} "
-                  f"with a presence of {languages_perc}% and its most related tag is {related_tag} "
-                  f"with a correlation value of {related_tag_corr}.")
+            print(f"#%s" % hashtag, f"is {popularity}% popular on Twitter, "
+                                    f"its most used variant is {variants_word} with {variants_perc}% of use, "
+                                    f"the top influencer is {top_influencers_name} "
+                                    f"with a reach of {top_influencers_reach}, "
+                                    f"it is mostly in {check_langcode(languages_code)} "
+                                    f"with a presence of {languages_perc}% "
+                                    f"and its most related tag is {related_tag} "
+                                    f"with a correlation value of {related_tag_corr}.")
             print()
             print("Here the full JSON insights of", hashtag, ":", json_data[hashtag])
             print()
             correlated_tags = ([key for key in json_data.keys()][1:])
             print(f"The most correlated tags to %s are:" % hashtag, ', '.join(correlated_tags))
-            print()
+            # Dictionary with keys = correlated_tags, values = correlation_value to the selected hashtag
+            # print()
+            # key = [key for key in json_data.keys()][1:]
+            # value = json_data[key]['correlation']
+            # print(json_data[key]['correlation'])
+            # print()
             print('\nStatistics for: ', json_data[hashtag]['name'], '\n')
             print(f"Popularity: {popularity}%")
 
@@ -86,7 +93,7 @@ def get_insights(hashtag):
             print(tabulate(table3, headers, tablefmt="fancy_grid"))
 
             # print('\nTABLE OF TOP RELATED TAGS')
-            # table4 = [[correlated_tags][related_tag_corr]]
+            # table4 = [[correlated_tags], [related_tag_corr]]
             # headers = ['Correlated Hashtag - #', 'Correlation value']
             # print(tabulate(table4, headers, tablefmt="fancy_grid"))
     else:

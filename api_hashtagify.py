@@ -43,19 +43,15 @@ def get_insights(hashtag):
             json.dump(json_data, f, indent=2)
 
             popularity = json_data[hashtag]['popularity']
-            variants_word = json_data[hashtag]['variants']
-            variants_word = [_[0] for _ in variants_word][0]
-            variants_perc = json_data[hashtag]['variants']
-            variants_perc = [_[1] for _ in variants_perc][0]
-            languages_code = json_data[hashtag]['languages']
-            languages_code = [_[0] for _ in languages_code][0]
-            languages_perc = json_data[hashtag]['languages']
-            languages_perc = [_[1] for _ in languages_perc][0]
-            top_influencers_name = json_data[hashtag]['top_influencers']
-            top_influencers_name = [_[0] for _ in top_influencers_name][0]
-            top_influencers_reach = json_data[hashtag]['top_influencers']
-            top_influencers_reach = [_[1] for _ in top_influencers_reach][0]
-            # 'related_tags': {'name': 'salsa', 'correlation': 1.13}
+            variants = json_data[hashtag]['variants']
+            variants_word = [_[0] for _ in variants][0]
+            variants_perc = [_[1] for _ in variants][0]
+            languages = json_data[hashtag]['languages']
+            languages_code = [_[0] for _ in languages][0]
+            languages_perc = [_[1] for _ in languages][0]
+            top_influencers = json_data[hashtag]['top_influencers']
+            top_influencers_name = [_[0] for _ in top_influencers][0]
+            top_influencers_reach = [_[1] for _ in top_influencers][0]
             related_tag = json_data[hashtag]['related_tags']['name']
             related_tag_corr = json_data[hashtag]['related_tags']['correlation']
             print()
@@ -71,23 +67,28 @@ def get_insights(hashtag):
             correlated_tags = ([key for key in json_data.keys()][1:])
             print(f"The most correlated tags to %s are:" % hashtag, ', '.join(correlated_tags))
             print()
-            print('\n\nStatistics for: ', json_data[hashtag]['name'], '\n')
+            print('\nStatistics for: ', json_data[hashtag]['name'], '\n')
             print(f"Popularity: {popularity}%")
 
             print('\nTABLE OF VARIANTS')
-            table1 = json_data[hashtag]['variants']
+            table1 = variants
             headers = ['Variant', '% of total']
             print(tabulate(table1, headers, tablefmt="fancy_grid"))
 
             print('\nTABLE OF LANGUAGES')
-            table2 = json_data[hashtag]['languages']
+            table2 = languages
             headers = ['Language', '% of total']
             print(tabulate(table2, headers, tablefmt="fancy_grid"))
 
             print('\nTABLE OF TOP INFLUENCERS')
-            table3 = json_data[hashtag]['top_influencers']
+            table3 = top_influencers
             headers = ['Influencer', 'Total reach']
             print(tabulate(table3, headers, tablefmt="fancy_grid"))
+
+            # print('\nTABLE OF TOP RELATED TAGS')
+            # table4 = [[correlated_tags][related_tag_corr]]
+            # headers = ['Correlated Hashtag - #', 'Correlation value']
+            # print(tabulate(table4, headers, tablefmt="fancy_grid"))
     else:
         elif response.status_code == 404:
             print("Status code: ", response.status_code)

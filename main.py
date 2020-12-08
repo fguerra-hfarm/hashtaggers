@@ -1,7 +1,25 @@
 import argparse
+from time import sleep
 
-# from api_token import get_access_token
 from api_hashtagify import get_insights
+
+
+def menu_select():
+    print("\nHASHTAGIFY API SERVICE\n"
+          "\nChoose between analysing the most frequent hashtags from a given dataset or any hashtag of your choice.")
+    print("\nType:"
+          "\n1 <- Specific dataset with a set of hashtags"
+          "\n2 <- Hashtag of your choice")
+    choice = 0
+    while choice != '1' or choice != '2':
+        choice = input("Selection: ")
+        if choice == '1' or choice == '2':
+            break
+        else:
+            print("Please, choose between available options")
+    print("\nOPTION SELECTED\n")
+    sleep(0.3)
+    return choice
 
 
 def extrapolate(analysis_type, hashtag):
@@ -11,7 +29,7 @@ def extrapolate(analysis_type, hashtag):
         return get_insights(hashtag)
 
 
-parser = argparse.ArgumentParser(description="Service to extrapolate hashtag's insights that are used on Twitter")
+parser = argparse.ArgumentParser(description="Service to extrapolate insights on hashtag's that are used on Twitter")
 parser.add_argument("analysis_choice", type=str, help="Preference of analysis (data origin)",
                     choices=['dataset', 'my_own'])
 parser.add_argument("hashtag", type=str, help="Hashtag that you want to analyse")
@@ -19,11 +37,3 @@ args = parser.parse_args()
 
 service = get_insights(args.hashtag)
 print(service)
-
-# get_access_token()
-# table = Counter(use_csv()).most_common(5)
-# print(tabulate(table, headers=["Hashtag - #", "Occurrence"], tablefmt="fancy_grid", numalign="center"))
-# print()
-# time.sleep(1)
-# get_insights(hashtag=input(f"From the given table, you may choose one of the most recurrent hashtags "
-#                            f"for a complete analysis: "))

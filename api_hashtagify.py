@@ -6,6 +6,7 @@ from collections import Counter
 from tabulate import tabulate
 
 from posts_csv import use_csv
+from api_token import get_access_token
 
 
 def read_access_token():
@@ -26,6 +27,42 @@ def check_langcode(languages_code):
             for i in range(len(resource.read())):
                 if resource.read()[i][0] == languages_code:
                     return resource.read()[i][1].lower()
+
+
+def check_token_validity():
+    print("\nChecking validity of your token ...")
+    endpoint = "https://api.hashtagify.me/1.0/tag/"
+    headers = {
+        'authorization': "Bearer " + read_access_token(),
+        'cache-control': "no-cache"
+    }
+    response = requests.get(endpoint + 'hashtag_test', headers=headers)
+    if response.status_code == 401:
+        print("There is a problem with the API service...\n"
+              "Error status code: ", response.status_code, "\n")
+        print("Your token is not valid, please follow the instruction below to generate a new one.\n")
+        get_access_token()
+        print("\nToken generated successfully!\n")
+    else:
+        print("\nYour token is valid!\n")
+
+
+def menu_select():
+    print("You can choose between analyzing the most frequent hashtags from a given dataset"
+          " or any hashtag of your choice.")
+    print("\nType:"
+          "\n1 <- Specific dataset hashtags analysis"
+          "\n2 <- Hashtag of your choice")
+    choice = 0
+    while choice != '1' or choice != '2':
+        choice = input("Selection: ")
+        if choice == '1' or choice == '2':
+            break
+        else:
+            print("Please, choose between available options")
+    print("\nOPTION SELECTED\n")
+    sleep(0.3)
+    return choice
 
 
 def get_insights(hashtag):
@@ -62,18 +99,10 @@ def get_insights(hashtag):
                                     f"it is mostly in {check_langcode(languages_code)} "
                                     f"with a presence of {languages_perc}% "
                                     f"and its most related tag is {related_tag} "
-                                    f"with a correlation value of {related_tag_corr}.")
-            print()
-            print("Here the full JSON insights of", hashtag, ":", json_data[hashtag])
-            print()
+                                    f"with a correlation value of {related_tag_corr}.\n")
+            # print("Here the full JSON insights of", hashtag, ":", json_data[hashtag])
             correlated_tags = ([key for key in json_data.keys()][1:])
             print(f"The most correlated tags to %s are:" % hashtag, ', '.join(correlated_tags))
-            # Dictionary with keys = correlated_tags, values = correlation_value to the selected hashtag
-            # print()
-            # key = [key for key in json_data.keys()][1:]
-            # value = json_data[key]['correlation']
-            # print(json_data[key]['correlation'])
-            # print()
             print('\nStatistics for: ', json_data[hashtag]['name'], '\n')
             print(f"Popularity: {popularity}%")
 
@@ -91,13 +120,8 @@ def get_insights(hashtag):
             table3 = top_influencers
             headers = ['Influencer', 'Total reach']
             print(tabulate(table3, headers, tablefmt="fancy_grid"))
-
-            # print('\nTABLE OF TOP RELATED TAGS')
-            # table4 = [[correlated_tags], [related_tag_corr]]
-            # headers = ['Correlated Hashtag - #', 'Correlation value']
-            # print(tabulate(table4, headers, tablefmt="fancy_grid"))
     else:
-        elif response.status_code == 404:
+        if response.status_code == 404:
             print("Status code: ", response.status_code)
             print("Hashtag not found, there isn't enough data yet for the requested hashtag.")
         elif response.status_code == 429:
@@ -108,9 +132,14 @@ def get_insights(hashtag):
 
 
 if __name__ == "__main__":
-    table = Counter(use_csv()).most_common(5)
-    print(tabulate(table, headers=["Hashtag - #", "Occurrence"], tablefmt="fancy_grid", numalign="center"))
-    print()
-    sleep(1)
-    data = get_insights(hashtag=input(f"From the given table, you may choose one of the most "
-                                      f"recurrent hashtags for a complete analysis: "))
+    check_token_validity()
+    selection = menu_select()
+    if selection == '1':
+        table = Counter(use_csv()).most_common(5)
+        print(tabulate(table, headers=["Hashtag - #", "Occurrence"], tablefmt="fancy_grid", numalign="center"))
+        print()
+        sleep(1)
+        data = get_insights(hashtag=input(f"From the given table, you may choose one of the most "
+                                          f"recurrent hashtags for a complete analysis: #"))
+    elif selection == '2':
+        data = get_insights(hashtag=input("Hashtag that you want to analyze: #"))

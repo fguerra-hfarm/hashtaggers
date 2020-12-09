@@ -30,7 +30,7 @@ parser = argparse.ArgumentParser(
             1 <- Specific dataset with a set of hashtags
             2 <- Hashtag of your choice
         '''))
-parser.add_argument('menu', nargs='*', type=check_choice, choices=[1, 2], default=[1, 2],
+parser.add_argument('menu', type=check_choice, choices=[1, 2], action='store',
                     help='Menu selection of the wanted analysis')
 parser.add_argument('-v', '--verbose', help='Complete hashtag information in a verbose format',
                     action='store_true')
@@ -43,52 +43,20 @@ parser.add_argument('-f', '--file', help='Extra generation of a clean .csv file 
                     action='store_true')
 args = parser.parse_args()
 
-
-# def print_type():
-#     if args.menu == 1:
-#         print()
-#         table = Counter(use_csv()).most_common(5)
-#         print(tabulate(table, headers=["Hashtag - #", "Occurrence"], tablefmt="fancy_grid", numalign="center"))
-#         sleep(0.5)
-#         get_insights(hashtag=input(f"\nFrom the given table, you may choose one of the most "
-#                                    f"recurrent hashtags for a complete analysis: #"))
-#     elif args.menu == 2:
-#         get_insights(hashtag=input("\nHashtag that you want to analyze: #"))
-#     # elif args.verbose:
-#     #     print()
-#     # elif args.tables:
-#     #     print()
-#     # elif args.correlated:
-#     #     print()
-#     # elif args.file:
-#     #     generate_csv()
-#
-#     return get_insights
-#
-#
-# print_type()
-
-
-def print_type(menu):
-    if menu == 1:
-        print()
-        table = Counter(use_csv()).most_common(5)
-        print(tabulate(table, headers=["Hashtag - #", "Occurrence"], tablefmt="fancy_grid", numalign="center"))
-        sleep(0.5)
-        get_insights(hashtag=input(f"\nFrom the given table, you may choose one of the most "
-                                   f"recurrent hashtags for a complete analysis: #"))
-    elif menu == 2:
-        get_insights(hashtag=input("\nHashtag that you want to analyze: #"))
-    # elif args.verbose:
-    #     print()
-    # elif args.tables:
-    #     print()
-    # elif args.correlated:
-    #     print()
-    # elif args.file:
-    #     generate_csv()
-
-    return get_insights
-
-
-print_type(menu=2)
+if args.menu == 1:
+    print()
+    table = Counter(use_csv()).most_common(5)
+    print(tabulate(table, headers=["Hashtag - #", "Occurrence"], tablefmt="fancy_grid", numalign="center"))
+    sleep(0.5)
+    get_insights(hashtag=input(f"\nFrom the given table, you may choose one of the most "
+                               f"recurrent hashtags for a complete analysis: #"))
+elif args.menu == 2:
+    get_insights(hashtag=input("\nHashtag that you want to analyze: #"))
+elif args.verbose:
+    print(get_insights.verbose) # need to find a way to print from outside function
+elif args.tables:
+    print()
+elif args.correlated:
+    print()
+elif args.file:
+    generate_csv()

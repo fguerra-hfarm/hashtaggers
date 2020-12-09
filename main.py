@@ -44,15 +44,40 @@ parser.add_argument('-f', '--file', help='Extra generation of a clean .csv file 
 args = parser.parse_args()
 
 
-def print_type():
-    if args.menu == 1:
+# def print_type():
+#     if args.menu == 1:
+#         print()
+#         table = Counter(use_csv()).most_common(5)
+#         print(tabulate(table, headers=["Hashtag - #", "Occurrence"], tablefmt="fancy_grid", numalign="center"))
+#         sleep(0.5)
+#         get_insights(hashtag=input(f"\nFrom the given table, you may choose one of the most "
+#                                    f"recurrent hashtags for a complete analysis: #"))
+#     elif args.menu == 2:
+#         get_insights(hashtag=input("\nHashtag that you want to analyze: #"))
+#     # elif args.verbose:
+#     #     print()
+#     # elif args.tables:
+#     #     print()
+#     # elif args.correlated:
+#     #     print()
+#     # elif args.file:
+#     #     generate_csv()
+#
+#     return get_insights
+#
+#
+# print_type()
+
+
+def print_type(menu):
+    if menu == 1:
         print()
         table = Counter(use_csv()).most_common(5)
         print(tabulate(table, headers=["Hashtag - #", "Occurrence"], tablefmt="fancy_grid", numalign="center"))
         sleep(0.5)
         get_insights(hashtag=input(f"\nFrom the given table, you may choose one of the most "
                                    f"recurrent hashtags for a complete analysis: #"))
-    elif args.menu == 2:
+    elif menu == 2:
         get_insights(hashtag=input("\nHashtag that you want to analyze: #"))
     # elif args.verbose:
     #     print()
@@ -66,4 +91,4 @@ def print_type():
     return get_insights
 
 
-print_type()
+print_type(menu=2)

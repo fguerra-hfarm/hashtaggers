@@ -1,4 +1,0 @@
-argparse
-tabulate
-requests
-datapackage

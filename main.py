@@ -64,7 +64,7 @@ try:
             api_hashtagify.get_insights(hashtag=input_ht)
     elif args.menu == 2:
         print()
-        table = Counter(posts_csv.use_post_csv()).most_common(5)
+        table = Counter(posts_csv.use_post_csv(filename="dataset.csv").most_common(10))
         print(tabulate(table, headers=["Hashtag - #", "Occurrence"], tablefmt="fancy_grid", numalign="center"))
         sleep(0.5)
         input_ht = input(f"\nFrom the given table, you may choose one of the most "
@@ -78,7 +78,7 @@ try:
         else:
             api_hashtagify.get_insights(hashtag=input_ht)
     elif args.menu == 3:
-        ht_csv.generate_csv()
+        ht_csv.generate_csv(filename="dataset.csv")
 
 except ValueError:
     print("Something went wrong, please retry!")

@@ -1,62 +1,95 @@
+import sys
 import argparse
 import textwrap
-from collections import Counter
-from tabulate import tabulate
 from time import sleep
-
-from api_hashtagify import get_insights
-from posts_csv import use_csv
-from ht_csv import generate_csv
+from tabulate import tabulate
+from collections import Counter
+from use_csv_package import ht_csv
+from use_csv_package import posts_csv
+from hashtagify_package import api_token
+from hashtagify_package import api_hashtagify
 
 
 def check_choice(choice):
     input_choice = int(choice)
-    if input_choice < 0 or input_choice > 3:
-        raise argparse.ArgumentTypeError("%s is an invalid choice, you must select 1 or 2" % choice)
+    if input_choice < 0 or input_choice > 4:
+        raise argparse.ArgumentTypeError(
+            "\n\nNumber %s is an invalid choice, you must select between 1/2/3 to run the program!\n" % choice)
     return input_choice
 
 
-# noinspection PyTypeChecker
-parser = argparse.ArgumentParser(
-    formatter_class=argparse.RawDescriptionHelpFormatter,
-    description=textwrap.dedent('''\
-                                                HASHTAGIFY API SERVICE
-    --------------------------------------------------------------------------------------------------------------------
-            Service to extrapolate insights about hashtags used on Twitter!
-            
-            Choose between analysing the most frequent hashtags from a given dataset or any hashtag of your choice.
-            
-            Menu:
-            1 <- Specific dataset with a set of hashtags
-            2 <- Hashtag of your choice
-        '''))
-parser.add_argument('menu', type=check_choice, choices=[1, 2], action='store',
-                    help='Menu selection of the wanted analysis')
-parser.add_argument('-v', '--verbose', help='Complete hashtag information in a verbose format',
-                    action='store_true')
-parser.add_argument('-t', '--tables', help='Only specific tables of insights regarding the selected hashtag',
-                    action='store_true')
-parser.add_argument('-c', '--correlated', help='Only specific correlated hashtags to the one that has been selected',
-                    action='store_true')
-parser.add_argument('-f', '--file', help='Extra generation of a clean .csv file of only hashtags from the raw dataset '
-                                         '(if present in the data folder)',
-                    action='store_true')
-args = parser.parse_args()
+def parse_arguments():
+    # noinspection PyTypeChecker
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=textwrap.dedent('''\
+                                                                              HASHTAGGERS ANALYTICS
+            ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-if args.menu == 1:
+                                                          Service to extrapolate insights regarding hashtags used on Twitter!
+                                                          Provided under paid license of the Hashtagify API for best accuracy
+
+                    Choose between analysing any hashtag of your choice, the most frequent hashtags from a given dataset or go for the .csv cleaning and creation tool.
+
+                    Menu:
+                    1 <- Hashtag of your choice
+                    2 <- Specific .csv dataset with a set of hashtags (upload yours in the '/use_csv_package/data' folder)
+                    3 <- Clean your dataset of posts and generate a .csv file of all the present hashtags inside
+                '''))
+    parser.add_argument('menu', type=check_choice, choices=[1, 2, 3], help='Menu selection choices',
+                        action='store')
+    parser.add_argument('-v', '--verbose', help='Complete hashtag information in a verbose format',
+                        action='store_true')
+    parser.add_argument('-t', '--tables', help='Specific tables of insights regarding the selected hashtag',
+                        action='store_true')
+    parser.add_argument('-c', '--correlated', help='Specific correlated hashtags to the one that has been selected',
+                        action='store_true')
     print()
-    table = Counter(use_csv()).most_common(5)
-    print(tabulate(table, headers=["Hashtag - #", "Occurrence"], tablefmt="fancy_grid", numalign="center"))
-    sleep(0.5)
-    get_insights(hashtag=input(f"\nFrom the given table, you may choose one of the most "
-                               f"recurrent hashtags for a complete analysis: #"))
-elif args.menu == 2:
-    get_insights(hashtag=input("\nHashtag that you want to analyze: #"))
-elif args.verbose:
-    print(get_insights.verbose) # need to find a way to print from outside function
-elif args.tables:
-    print()
-elif args.correlated:
-    print()
-elif args.file:
-    generate_csv()
+    arguments = parser.parse_args()
+    return arguments
+
+
+try:
+    api_token.check_token()
+    args = parse_arguments()
+    if args.menu == 1:
+        if args.verbose:
+            api_hashtagify.get_insights(vot='v', hashtag=input("\nHashtag that you want to analyze: #"))
+        elif args.tables:
+            api_hashtagify.get_insights(vot='t', hashtag=input("\nHashtag that you want to analyze: #"))
+        elif args.correlated:
+            api_hashtagify.get_insights(vot='c', hashtag=input("\nHashtag that you want to analyze: #"))
+        else:
+            api_hashtagify.get_insights(hashtag=input("\nHashtag that you want to analyze: #"))
+    elif args.menu == 2:
+        print()
+        table = Counter(posts_csv.use_post_csv()).most_common(5)
+        print(tabulate(table, headers=["Hashtag - #", "Occurrence"], tablefmt="fancy_grid", numalign="center"))
+        sleep(0.5)
+        if args.verbose:
+            api_hashtagify.get_insights(vot='v',
+                                        hashtag=input(f"\nFrom the given table, you may choose one of the most "
+                                                      f"recurrent hashtags for a complete analysis: #"))
+        elif args.tables:
+            api_hashtagify.get_insights(vot='t',
+                                        hashtag=input(f"\nFrom the given table, you may choose one of the most "
+                                                      f"recurrent hashtags for a complete analysis: #"))
+        elif args.correlated:
+            api_hashtagify.get_insights(vot='c',
+                                        hashtag=input(f"\nFrom the given table, you may choose one of the most "
+                                                      f"recurrent hashtags for a complete analysis: #"))
+        else:
+            api_hashtagify.get_insights(hashtag=input(f"\nFrom the given table, you may choose one of the most "
+                                                      f"recurrent hashtags for a complete analysis: #"))
+    elif args.menu == 3:
+        ht_csv.generate_csv()
+
+except ValueError:
+    print("Something went wrong, please retry!")
+    sys.exit()
+
+except PermissionError:
+    print("Close the .csv files before running the program!")
+
+except ConnectionError:
+    print("Bad getaway error, please check your connection!")

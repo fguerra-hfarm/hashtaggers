@@ -53,36 +53,32 @@ try:
     api_token.check_token()
     args = parse_arguments()
     if args.menu == 1:
+        input_ht = input("Hashtag that you want to analyze: #")
         if args.verbose:
-            api_hashtagify.get_insights(vot='v', hashtag=input("\nHashtag that you want to analyze: #"))
+            api_hashtagify.get_insights(vot='v', hashtag=input_ht)
         elif args.tables:
-            api_hashtagify.get_insights(vot='t', hashtag=input("\nHashtag that you want to analyze: #"))
+            api_hashtagify.get_insights(vot='t', hashtag=input_ht)
         elif args.correlated:
-            api_hashtagify.get_insights(vot='c', hashtag=input("\nHashtag that you want to analyze: #"))
+            api_hashtagify.get_insights(vot='c', hashtag=input_ht)
         else:
-            api_hashtagify.get_insights(hashtag=input("\nHashtag that you want to analyze: #"))
+            api_hashtagify.get_insights(hashtag=input_ht)
     elif args.menu == 2:
         print()
-        table = Counter(posts_csv.use_post_csv()).most_common(5)
+        table = Counter(posts_csv.use_post_csv(filename="dataset.csv").most_common(10))
         print(tabulate(table, headers=["Hashtag - #", "Occurrence"], tablefmt="fancy_grid", numalign="center"))
         sleep(0.5)
+        input_ht = input(f"\nFrom the given table, you may choose one of the most "
+                         f"recurrent hashtags for a complete analysis: #")
         if args.verbose:
-            api_hashtagify.get_insights(vot='v',
-                                        hashtag=input(f"\nFrom the given table, you may choose one of the most "
-                                                      f"recurrent hashtags for a complete analysis: #"))
+            api_hashtagify.get_insights(vot='v', hashtag=input_ht)
         elif args.tables:
-            api_hashtagify.get_insights(vot='t',
-                                        hashtag=input(f"\nFrom the given table, you may choose one of the most "
-                                                      f"recurrent hashtags for a complete analysis: #"))
+            api_hashtagify.get_insights(vot='t', hashtag=input_ht)
         elif args.correlated:
-            api_hashtagify.get_insights(vot='c',
-                                        hashtag=input(f"\nFrom the given table, you may choose one of the most "
-                                                      f"recurrent hashtags for a complete analysis: #"))
+            api_hashtagify.get_insights(vot='c', hashtag=input_ht)
         else:
-            api_hashtagify.get_insights(hashtag=input(f"\nFrom the given table, you may choose one of the most "
-                                                      f"recurrent hashtags for a complete analysis: #"))
+            api_hashtagify.get_insights(hashtag=input_ht)
     elif args.menu == 3:
-        ht_csv.generate_csv()
+        ht_csv.generate_csv(filename="dataset.csv")
 
 except ValueError:
     print("Something went wrong, please retry!")

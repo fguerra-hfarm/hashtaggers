@@ -15,7 +15,7 @@ def check_langcode(languages_code):
         if resource.descriptor['datahub']['type'] == 'derived/csv':
             for i in range(len(resource.read())):
                 if resource.read()[i][0] == languages_code:
-                    return resource.read()[i][1].lower()
+                    return resource.read()[i][1]
 
 
 def get_insights(hashtag, vot="base"):
@@ -44,6 +44,7 @@ def get_insights(hashtag, vot="base"):
             top_influencers_reach = [_[1] for _ in top_influencers][0]
             related_tag = j_data[hashtag]['related_tags']['name']
             related_tag_corr = j_data[hashtag]['related_tags']['correlation']
+
             if vot == 'v' or vot == 'base':
                 print(f"\n#%s" % hashtag, f"is {popularity}% popular on Twitter, "
                                           f"its most used variant is "
@@ -61,10 +62,11 @@ def get_insights(hashtag, vot="base"):
                                           f"is {related_tag} "
                                           f"with a correlation value "
                                           f"of {related_tag_corr}.\n")
+
             if vot == 'c' or vot == 'base':
                 correlated_tags = ([key for key in j_data.keys()][1:])
                 print(f"\nThe most correlated tags to %s are:"
-                      % hashtag, ', '.join(correlated_tags))
+                      % hashtag, ', '.join(correlated_tags), "\n")
 
             if vot == 't' or vot == 'base':
                 print('\nStatistics for: ', j_data[hashtag]['name'], '\n')
@@ -84,13 +86,12 @@ def get_insights(hashtag, vot="base"):
                 table3 = top_influencers
                 headers = ['Influencer', 'Total reach']
                 print(tabulate(table3, headers, tablefmt="fancy_grid"))
+                print()
     else:
         if response.status_code == 404:
-            print("Status code: ", response.status_code)
-            print("Hashtag not found, "
-                  "there isn't enough data yet for the requested hashtag.")
+            print("\nThere is an error! Status code: ", response.status_code, "\n"
+                  "Hashtag not found... There isn't enough data yet for the requested hashtag "
+                  "or there is an invalid input type.\n")
         elif response.status_code == 429:
-            print("Status code: ", response.status_code)
-            print("The daily or hourly quota has been exceeded.")
-
-        raise Exception("There is an error...")
+            print("\nThere is an error! Status code: ", response.status_code, "\n"
+                  "The daily or hourly quota has been exceeded.\n")

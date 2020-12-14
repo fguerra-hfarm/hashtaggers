@@ -2,10 +2,10 @@
 
 This package will read, analyse and clean a given `.csv` file.
 
-##### Requirements for the dataset
-The mandatory requirements for the dataset are that it must be composed of a single column of posts and it is located in the directory `../hashtaggers-main/use_csv_package/data/dataset.csv`. You must rename it **dataset.csv**.
+#### Requirements for the dataset
+The mandatory requirements for the .csv dataset are that it must be composed of a single column of posts, you must rename it **dataset.csv**, and you must locate it in the directory `../hashtaggers-main/use_csv_package/data/dataset.csv`.
 
-A sample file is provided! Hope you like motorbikes since it is about November posts from @DucatiMotor! :motorcycle:
+A sample file is provided! Hope you like motorbikes since it is about November posts from [@DucatiMotor](https://twitter.com/ducatimotor)! :motorcycle:
 
 In this folder you can find the following list of modules:
 1. `posts_csv.py`

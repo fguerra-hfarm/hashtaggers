@@ -32,5 +32,6 @@ setuptools.setup(
         include=['hashtagify_package', 'hashtagify_package.*',
                  'use_csv_package', 'use_csv_package.*']),
     python_requires='>=3',
-    install_requires=['argparse', 'tabulate', 'requests', 'datapackage']
+    install_requires=['argparse', 'tabulate', 'setuptools',
+                      'requests', 'datapackage']
 )

@@ -10,7 +10,7 @@ Welcome to our repository! :wave:
 <img src="https://i.ibb.co/3WmGM3f/Twitter-Logo-White-On-Blue.png" alt="Twitter-Logo-White-On-Blue" border="0" align="right" width="120" height="120">
 
 With this program, developed with love and dedication, you will be able to:
-1) Analyse a Twitter hashtag very deeply (API: [Hashtagify.me](https://hashtagify.me/));
+1) Analyse a Twitter hashtag very deeply (API: [_Hashtagify.me_](https://hashtagify.me/));
     - Get your insights and stats from a proven working service;
 2) Clean a dataset of posts and export from it all the hashtags that are present;
     - This is an universal function! The kind of social network does not matter. :top:
@@ -47,8 +47,8 @@ The first step to follow in order to use this project is to download the reposit
     <img src="https://i.ibb.co/NZ7H1jN/download.gif" alt="download" border="0" width=45% height=45%>
 </p>
 
-Once you have the repository on your local workspace, open the terminal in the repository directory and run the following command line: `$ python setup.py install`.  
-This command will install all the necessary requirements (with the packages stated above) in order to run everything with full potential. 
+Once you have the repository on your local workspace, open the terminal in the repository directory and run the following command line: `$ python setup.py install` (sometimes it could need the _pyhton3_ command to work instead of just _python_).  
+This command will install all the necessary requirements (with the packages stated above) in order to run everything with its full potential. 
 
 Now you are ready to roll! :sunglasses: 
 
@@ -180,14 +180,17 @@ By combining *positional arguments* (1 or 2 or 3) and *optional arguments* (show
 
 Let's see the possible arrangements:
  1. `$ python main.py 1 -v` : if you want to know in discursive and understandable way the description of an hashtag of your choice and want to read it easily;
- 2. `$ python main.py 2 -t` : after having the program analyse your dataset, if you want to display the tables explained above of the picked hashtag (maybe chosen on the occurrence of hashtags present in your dataset);
+ 2. `$ python main.py 2 --tables` : after having the program analyse your dataset, if you want to display the tables explained above of the picked hashtag (maybe chosen on the occurrence of hashtags present in your dataset);
  3. `$ python main.py 1 -c` : if you are interested in knowing which hashtags are the most related to the one you have chosen;
  4. `$ python main.py 1 --correlated` : will do the same thing as example #3;
- 5. `$ python main.py 3 --verbose` : if you type _any optional argument with the function 3_, even if it does not make any sense since you are choosing the `.csv` option, the program will still run with **no problems** and it will give you the requested export based on your dataset (of course you need to respect the dataset requirements).
+ 5. `$ python main.py 1 -v -c` : if you are interested in a verbose description as example #1 + you want to know which hashtags are the most related to the one you have chosen;
+ 6. `$ python main.py 3 -v` : if you type _any optional argument_ with the **function 3**, which of course does not make any sense since you are choosing the `.csv` option, the program will still run with **no problems** and it will give you the requested export based on your dataset (of course you need to respect the dataset requirements).
 
-**Hopefully everything is clear, have fun! :blush:**
+-----------
 
-**We are Hashtaggers! We are born to analyse hashtags!**
+<br />
+<p align="center"><b>Hopefully everything is clear, have fun! :blush:</b></p>
+<br />
 
 #### Team
 
@@ -200,3 +203,9 @@ Let's see the possible arrangements:
 #### License
 
 [GNU General Public License v3.0](https://choosealicense.com/licenses/gpl-3.0/)
+
+-----------
+
+<br />
+<p align="center"><b>We are Hashtaggers! We are born to analyse hashtags!</b></p>
+<br />

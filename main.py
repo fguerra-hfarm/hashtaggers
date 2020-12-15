@@ -72,12 +72,32 @@ try:
     # Simple chosen hashtag
     if args.menu == 1:
         input_ht = input("Hashtag that you want to analyze: #")
+        sleep(0.5)
+        print("\nRunning...")
         if args.verbose:
             api_hashtagify.get_insights(vot='v', hashtag=input_ht.lower())
+            if args.tables:
+                api_hashtagify.get_insights(vot='t',
+                                            hashtag=input_ht.lower())
+            elif args.correlated:
+                api_hashtagify.get_insights(vot='c',
+                                            hashtag=input_ht.lower())
         elif args.tables:
             api_hashtagify.get_insights(vot='t', hashtag=input_ht.lower())
+            if args.verbose:
+                api_hashtagify.get_insights(vot='v',
+                                            hashtag=input_ht.lower())
+            elif args.correlated:
+                api_hashtagify.get_insights(vot='c',
+                                            hashtag=input_ht.lower())
         elif args.correlated:
             api_hashtagify.get_insights(vot='c', hashtag=input_ht.lower())
+            if args.verbose:
+                api_hashtagify.get_insights(vot='v',
+                                            hashtag=input_ht.lower())
+            elif args.tables:
+                api_hashtagify.get_insights(vot='t',
+                                            hashtag=input_ht.lower())
         else:
             api_hashtagify.get_insights(hashtag=input_ht.lower())
     # --------------------------------
@@ -91,12 +111,32 @@ try:
         sleep(0.5)
         input_ht = input(f"\nFrom the given table, you may choose one of the "
                          f"most recurrent hashtags for a complete analysis: #")
+        sleep(0.5)
+        print("\nRunning...")
         if args.verbose:
             api_hashtagify.get_insights(vot='v', hashtag=input_ht.lower())
+            if args.tables:
+                api_hashtagify.get_insights(vot='t',
+                                            hashtag=input_ht.lower())
+            elif args.correlated:
+                api_hashtagify.get_insights(vot='c',
+                                            hashtag=input_ht.lower())
         elif args.tables:
             api_hashtagify.get_insights(vot='t', hashtag=input_ht.lower())
+            if args.verbose:
+                api_hashtagify.get_insights(vot='v',
+                                            hashtag=input_ht.lower())
+            elif args.correlated:
+                api_hashtagify.get_insights(vot='c',
+                                            hashtag=input_ht.lower())
         elif args.correlated:
             api_hashtagify.get_insights(vot='c', hashtag=input_ht.lower())
+            if args.verbose:
+                api_hashtagify.get_insights(vot='v',
+                                            hashtag=input_ht.lower())
+            elif args.tables:
+                api_hashtagify.get_insights(vot='t',
+                                            hashtag=input_ht.lower())
         else:
             api_hashtagify.get_insights(hashtag=input_ht.lower())
     # --------------------------------

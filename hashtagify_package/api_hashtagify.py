@@ -36,7 +36,6 @@ def get_insights(hashtag, vot='base'):
                             headers=headers, timeout=(30, 30))
 
     if response.ok:
-        print("\nRunning...")
         j_data = response.json()
         with open(os.path.join(os.path.dirname(
                 os.path.abspath(__file__)), 'hashtag_data.json'), 'w+') as f:
@@ -68,17 +67,17 @@ def get_insights(hashtag, vot='base'):
                       f"it is mostly in {check_langcode(languages_code)} "
                       f"with a presence of {languages_perc}% "
                       f"and its most related tag is {related_tag} "
-                      f"with a correlation value of {related_tag_corr}.\n")
+                      f"with a correlation value of {related_tag_corr}.")
 
             # Correlated hashtags for the argparse implementation
             if vot == 'c' or vot == 'base':
                 correlated_tags = ([key for key in j_data.keys()][1:])
                 print(f"\nThe most correlated tags to %s are:"
-                      % hashtag, ', '.join(correlated_tags), "\n")
+                      % hashtag, ', '.join(correlated_tags))
 
             # Tables of variable for the argparse implementation
             if vot == 't' or vot == 'base':
-                print("\nStatistics for: ", j_data[hashtag]['name'], '\n')
+                print("\nStatistics for:", j_data[hashtag]['name'], '\n')
                 print(f"Popularity: {popularity}%")
 
                 print('\nTABLE OF VARIANTS')

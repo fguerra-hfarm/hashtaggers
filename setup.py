@@ -5,7 +5,7 @@ import setuptools
 """Hashtagger Analytics Package full details and requirements."""
 
 with open(os.path.dirname(os.path.abspath(__file__))
-          + '/README.md', 'r') as ld:
+          + '/README.md', 'r', encoding='utf8') as ld:
     long_description = ld.read()
 
 setuptools.setup(
